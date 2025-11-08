@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: newshub
+
+  datasource:
+    url: jdbc:postgresql://localhost:5435/newshub_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000
+
+newshub:
+  security:
+    secret: minha-chave-secreta-super-segura-para-jwt-tokens-2025
+    expiration: 86400000
+
+  newsapi:
+    key: sua-chave-aqui
+    base-url: https://newsapi.org/v2
+
+server:
+  port: 8081

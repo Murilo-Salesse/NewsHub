@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: newshub-db
+    environment:
+      POSTGRES_DB: newshub_db  # ← Estava "newshub", corrigi para "newshub_db"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - newshub_data:/var/lib/postgresql/data  # ← Estava "newshub", corrigi
+    networks:
+      - newshub-net
+    healthcheck:  # ← Adicionei healthcheck
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:  # ← ADICIONEI O REDIS (você vai precisar para cache!)
+    image: redis:alpine
+    container_name: newshub-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - newshub-net
+
+  app:
+    build: .
+    container_name: newshub-app
+    ports:
+      - "8080:8080"
+    environment:
+      # ← CORRIGI: dentro do Docker, use o nome do serviço, não localhost
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/newshub_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATA_REDIS_HOST: redis  # ← ADICIONEI
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate  # ← Mudei para validate (usar Flyway)
+    depends_on:
+      postgres:
+        condition: service_healthy  # ← Espera o banco estar pronto
+      redis:
+        condition: service_started
+    networks:
+      - newshub-net
+
+volumes:
+  newshub_data:  # ← Estava sem o "_data"
+
+networks:
+  newshub-net:
+    driver: bridge
