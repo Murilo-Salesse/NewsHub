@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ResponseModel<UserResponse>> createUser(@RequestBody @Valid UserRequest request) {
-        return ResponseEntity.ok(userService.createUser(UserMapper.toUser(request)));
+        return ResponseEntity.ok(userService.createUser(request));
     }
 
     @GetMapping("/all")
