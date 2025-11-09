@@ -7,6 +7,8 @@ import br.com.newshub.user.model.User;
 import br.com.newshub.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -19,5 +21,11 @@ public class UserService {
     public ResponseModel<UserResponse> createUser(User user) {
 
         return ResponseModel.of(UserMapper.toUserResponse(userRepository.save(user)), "Usuário criado com sucesso");
+    }
+
+    public ResponseModel<List<UserResponse>> listAllUsers() {
+
+        List<User> users = userRepository.findAll();
+        return ResponseModel.ok(UserMapper.toUserResponse(users));
     }
 }

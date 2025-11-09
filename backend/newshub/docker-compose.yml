@@ -5,22 +5,22 @@ services:
     image: postgres:16
     container_name: newshub-db
     environment:
-      POSTGRES_DB: newshub_db  # ← Estava "newshub", corrigi para "newshub_db"
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5435:5432"
     volumes:
-      - newshub_data:/var/lib/postgresql/data  # ← Estava "newshub", corrigi
+      - newshub_data:/var/lib/postgresql/data
     networks:
       - newshub-net
-    healthcheck:  # ← Adicionei healthcheck
+    healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  redis:  # ← ADICIONEI O REDIS (você vai precisar para cache!)
+  redis:
     image: redis:alpine
     container_name: newshub-redis
     ports:
@@ -32,24 +32,23 @@ services:
     build: .
     container_name: newshub-app
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
-      # ← CORRIGI: dentro do Docker, use o nome do serviço, não localhost
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/newshub_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_DATA_REDIS_HOST: redis  # ← ADICIONEI
-      SPRING_JPA_HIBERNATE_DDL_AUTO: validate  # ← Mudei para validate (usar Flyway)
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
     depends_on:
       postgres:
-        condition: service_healthy  # ← Espera o banco estar pronto
+        condition: service_healthy
       redis:
         condition: service_started
     networks:
       - newshub-net
 
 volumes:
-  newshub_data:  # ← Estava sem o "_data"
+  newshub_data:
 
 networks:
   newshub-net:
