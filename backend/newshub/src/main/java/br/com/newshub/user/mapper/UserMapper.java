@@ -5,6 +5,9 @@ import br.com.newshub.user.dto.response.UserResponse;
 import br.com.newshub.user.model.User;
 import lombok.experimental.UtilityClass;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @UtilityClass
 public class UserMapper {
 
@@ -24,6 +27,14 @@ public class UserMapper {
                 .name(user.getUsername())
                 .email(user.getEmail())
                 .build();
+    }
+
+
+    // Model (Entidade) → DTO (Response) para listas
+    public static List<UserResponse> toUserResponse(List<User> users) {
+        return users.stream()
+                .map(UserMapper::toUserResponse)
+                .collect(Collectors.toList());
     }
 }
 

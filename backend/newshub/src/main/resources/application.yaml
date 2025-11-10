@@ -3,9 +3,9 @@ spring:
     name: newshub
 
   datasource:
-    url: ${db_url}
-    username: ${db_username}
-    password: ${db_password}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -25,11 +25,11 @@ spring:
 
 newshub:
   security:
-    secret: ${secret_key}
+    secret: ${SECRET_KEY_JWT}
     expiration: 86400000
 
   newsapi:
-    key: ${secret_key_api}
+    key: ${API_KEY}
     base-url: https://newsapi.org/v2
 
 server:
