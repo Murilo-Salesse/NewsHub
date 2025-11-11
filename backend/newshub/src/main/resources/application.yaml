@@ -30,7 +30,7 @@ newshub:
 
   newsapi:
     key: ${API_KEY}
-    base-url: https://newsapi.org/v2
+    base-url: https://gnews.io/api/v4/search
 
 server:
   port: 8081

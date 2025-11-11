@@ -2,8 +2,10 @@ package br.com.newshub.user.mapper;
 
 import br.com.newshub.user.dto.request.UserRequest;
 import br.com.newshub.user.dto.response.UserResponse;
+import br.com.newshub.user.dto.response.UserResponseLogin;
 import br.com.newshub.user.model.User;
 import lombok.experimental.UtilityClass;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,11 +14,11 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     // DTO (Request) → Model (Entidade)
-    public static User toUser(UserRequest userRequest) {
+    public static User toUser(UserRequest userRequest, PasswordEncoder passwordEncoder) {
         return User.builder()
                 .username(userRequest.name())
                 .email(userRequest.email())
-                .password(userRequest.password())
+                .password(passwordEncoder.encode(userRequest.password()))
                 .build();
     }
 
@@ -26,6 +28,15 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getUsername())
                 .email(user.getEmail())
+                .build();
+    }
+
+    public static UserResponseLogin toUserResponseWithToken(User user, String token) {
+        return UserResponseLogin.builder()
+                .id(user.getId())
+                .name(user.getUsername())
+                .email(user.getEmail())
+                .token(token)
                 .build();
     }
 

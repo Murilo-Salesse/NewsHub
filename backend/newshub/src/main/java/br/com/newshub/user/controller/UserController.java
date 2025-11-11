@@ -2,7 +2,9 @@ package br.com.newshub.user.controller;
 
 import br.com.newshub.response.ResponseModel;
 import br.com.newshub.user.dto.request.UserRequest;
+import br.com.newshub.user.dto.request.UserRequestLogin;
 import br.com.newshub.user.dto.response.UserResponse;
+import br.com.newshub.user.dto.response.UserResponseLogin;
 import br.com.newshub.user.mapper.UserMapper;
 import br.com.newshub.user.service.UserService;
 import jakarta.validation.Valid;
@@ -21,9 +23,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ResponseModel<UserResponse>> createUser(@RequestBody @Valid UserRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseModel<UserResponseLogin>> vefifyUser(@RequestBody @Valid UserRequestLogin request) {
+        return ResponseEntity.ok(userService.verifyIfUserExists(request));
     }
 
     @GetMapping("/all")
