@@ -23,6 +23,10 @@ spring:
       port: 6379
       timeout: 60000
 
+  cache:
+    redis:
+      time-to-live: 300000
+
 newshub:
   security:
     secret: ${SECRET_KEY_JWT}

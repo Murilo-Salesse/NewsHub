@@ -10,7 +10,7 @@ import java.util.List;
 @FeignClient(name = "GnewsClient", url = "${newshub.newsapi.base-url}")
 public interface GnewsClient {
 
-    @GetMapping("?q=Google&lang=pt&max=5&apikey=${newshub.newsapi.key}")
+    @GetMapping("?q=Google&lang=pt&max=10&apikey=${newshub.newsapi.key}")
     GnewsResponse getLatestNews();
 
 }

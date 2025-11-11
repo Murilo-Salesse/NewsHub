@@ -45,7 +45,7 @@ public class UserService {
         boolean passwordMatches = passwordEncoder.matches(requestLogin.password(), user.getPassword());
 
         if (!passwordMatches) {
-            throw new EntityNotFoundException("Senha incorreta");
+            throw new EntityNotFoundException("Email ou Senha incorretos");
         }
 
         return ResponseModel.of(UserMapper.toUserResponseWithToken(user,
