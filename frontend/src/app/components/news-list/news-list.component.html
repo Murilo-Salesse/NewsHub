@@ -1,0 +1,106 @@
+<app-header></app-header>
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+  <div class="max-w-7xl mx-auto">
+    @if (loading()) {
+      <div class="flex justify-center items-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    }
+
+    @if (error() && !loading()) {
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+        {{ error() }}
+        <button
+          (click)="loadNews()"
+          class="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    }
+
+    @if (!loading() && !error()) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (item of news(); track item.id) {
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative">
+            @if (item.image) {
+              <div class="relative h-48 overflow-hidden">
+                <img
+                  [src]="item.image"
+                  [alt]="item.title"
+                  class="w-full h-full object-cover"
+                  (error)="onImageError($event)"
+                />
+              </div>
+            }
+            
+            <button
+              (click)="toggleFavorite(item)"
+              class="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white transition-colors shadow-lg z-10"
+              [class.text-red-500]="isFavorite()(item.id)"
+              [class.text-gray-400]="!isFavorite()(item.id)"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                />
+              </svg>
+            </button>
+
+            <div class="p-6">
+              <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                {{ item.title }}
+              </h2>
+              <p class="text-gray-600 mb-4 line-clamp-3">
+                {{ item.description }}
+              </p>
+              <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <span>{{ formatDate(item.publishedAt) }}</span>
+              </div>
+              <a
+                [href]="item.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+              >
+                Ler mais
+                <svg
+                  class="w-4 h-4 ml-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (!loading() && !error() && news().length === 0) {
+      <div class="text-center py-20">
+        <p class="text-gray-500 text-lg">Nenhuma notícia encontrada.</p>
+      </div>
+    }
+  </div>
+</div>
+
+@if (showAuthModal()) {
+  <app-auth-modal
+    (authSuccess)="onAuthSuccess()"
+    (close)="closeAuthModal()"
+  ></app-auth-modal>
+}
