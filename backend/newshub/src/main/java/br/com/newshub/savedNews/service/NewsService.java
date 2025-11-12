@@ -51,4 +51,14 @@ public class NewsService {
 
         return new ResponseModel<>(response, "Lista de favoritos");
     }
+
+    public ResponseModel<String> deleteFavoriteNews(Long id) {
+        newRepository.deleteById(id);
+        return ResponseModel.ok("Notícia removida dos favoritos com sucesso");
+    }
+
+    public ResponseModel<String> deleteAllFavoriteNews() {
+        newRepository.deleteAll();
+        return ResponseModel.ok("Todas as notícias foram removidas dos favoritos com sucesso");
+    }
 }

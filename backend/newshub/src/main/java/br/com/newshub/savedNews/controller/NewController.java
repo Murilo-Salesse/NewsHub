@@ -38,4 +38,14 @@ public class NewController {
 
         return ResponseEntity.ok(newsService.saveFavorite(request));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseModel<String>> deleteNews(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(newsService.deleteFavoriteNews(id));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ResponseModel<String>> deleteAllNews() {
+        return ResponseEntity.ok(newsService.deleteAllFavoriteNews());
+    }
 }

@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -13,15 +14,23 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil {
 
-    private final Key secretKey = Keys.hmacShaKeyFor("chave-secreta-super-segura-para-token-123456".getBytes());
-    private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
+    private final Key secretKey;
+    private final long expirationTime;
+
+    public JwtTokenUtil(
+            @Value("${newshub.security.secret}") String secret,
+            @Value("${newshub.security.expiration}") long expirationTime
+    ) {
+        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        this.expirationTime = expirationTime;
+    }
 
     public String generateToken(String username, String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("name", username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
